@@ -1,0 +1,79 @@
+import cv2 as cv
+
+def insert_image(user_image):
+    """
+    Load image and convert to grayscale.
+    Return grayscale image or None if error.
+    """
+    try:
+        rgb_image = cv.imread(user_image)
+        if rgb_image is None:
+            print("❌ Error: Image not found or wrong path.")
+            return None
+        
+        gray_image = cv.cvtColor(rgb_image, cv.COLOR_BGR2GRAY)
+        
+        cv.imshow("The Gray Image 😎", gray_image)
+        cv.waitKey(0)
+        cv.destroyAllWindows()
+        
+        return gray_image
+    
+    except cv.error as e:
+        print(f"OpenCV error occurred: {e}")
+        return None
+    except Exception as e:
+        print(f"Unexpected error occurred: {e}")
+        return None
+
+def write(gray_image, img_format):
+    """
+    Save grayscale image to file with given format.
+    """
+    if gray_image is not None:
+        try:
+            img_name = f"Gray_image_output.{img_format}"
+            success = cv.imwrite(img_name, gray_image)
+            if success:
+                print(f"✅ File saved successfully as '{img_name}'.")
+            else:
+                print("❌ Saving the file failed.")
+        except Exception as e:
+            print(f"Error while saving the image: {e}")
+    else:
+        print("⚠️ No image to save. Convert an image first.")
+
+def main():
+    """
+    Simple menu loop for conversion and saving.
+    """
+    gray_image = None
+    
+    while True:
+        print("\nMenu:")
+        print("1. Convert RGB image to Grayscale")
+        print("2. Save converted image")
+        print("3. Exit")
+
+        user_input = input("Enter choice (1/2/3): ").strip()
+
+        if user_input == "1":
+            in_image = input("Image path: ").strip()
+            gray_image = insert_image(in_image)
+
+        elif user_input == "2":
+            if gray_image is None:
+                print("⚠️ Convert an image first.")
+                continue
+            img_format = input("Format (jpeg/png/etc): ").strip().lower()
+            write(gray_image, img_format)
+
+        elif user_input == "3":
+            print("Thanks for using the app! 😊")
+            break
+
+        else:
+            print("❌ Invalid input, try again.")
+
+if __name__ == "__main__":
+    main()
